@@ -12,9 +12,8 @@ const { getErrorMessages } = require('../utils/handle-errors');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUserData = async (req, res, next) => {
-  const { _id } = req.user;
   try {
-    const user = await User.findById(_id);
+    const user = await User.findById(req.user._id);
     if (!user) {
       return next(new NotFoundError(`${NOT_EXISTS_MESSAGE}: Пользователь не найден.`));
     }
@@ -27,12 +26,17 @@ const getUserData = async (req, res, next) => {
   }
 };
 
-const updateUser = async (req, res, next, updates) => {
+const updateUser = async (req, res, next) => {
+  const { name, email } = req.body;
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, updates, {
-      runValidators: true,
-      new: true,
-    });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { name: escape(name), email },
+      {
+        runValidators: true,
+        new: true,
+      },
+    );
 
     if (!updatedUser) {
       return next(new NotFoundError(`${NOT_EXISTS_MESSAGE}: Пользователь не найден.`));
@@ -47,31 +51,17 @@ const updateUser = async (req, res, next, updates) => {
   }
 };
 
-const upDateUserData = async (req, res, next) => {
-  const { name, about } = req.body;
-  return updateUser(req, res, next, { name: escape(name), about: escape(about) });
-};
-
-const upDateUserAvatar = async (req, res, next) => {
-  const { avatar } = req.body;
-  return updateUser(req, res, next, { avatar });
-};
-
 const createUser = async (req, res, next) => {
   try {
     const hash = await bcryptjs.hash(req.body.password, 10);
-    const { name, about, avatar, email } = req.body;
+    const { name, email } = req.body;
     const newUser = await User.create({
-      name: name ? escape(name) : name,
-      about: about ? escape(about) : about,
-      avatar,
+      name: escape(name),
       email,
       password: hash,
     });
     return res.status(CREATED_CODE).json({
       name: newUser.name,
-      about: newUser.about,
-      avatar: newUser.avatar,
       email: newUser.email,
       _id: newUser._id,
     });
@@ -99,11 +89,9 @@ const login = async (req, res, next) => {
       return next(new NotAuthorizedError('Неправильные почта или пароль'));
     }
 
-    const token = jwt.sign(
-      { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key',
-      { expiresIn: '7d' },
-    );
+    const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key', {
+      expiresIn: '7d',
+    });
     return res
       .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
@@ -125,11 +113,9 @@ const logout = async (req, res, next) => {
       return next(new NotFoundError(`${NOT_EXISTS_MESSAGE}: Пользователь не найден.`));
     }
 
-    const token = jwt.sign(
-      { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key',
-      { expiresIn: -1 },
-    );
+    const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key', {
+      expiresIn: -1,
+    });
 
     return res
       .cookie('jwt', token, {
@@ -149,8 +135,7 @@ const logout = async (req, res, next) => {
 
 module.exports = {
   createUser,
-  upDateUserData,
-  upDateUserAvatar,
+  updateUser,
   login,
   getUserData,
   logout,

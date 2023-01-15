@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { login, createUser, logout } = require('../controllers/users');
-const { joiNameOrAbout, joiEmail, joiPassword, joiId } = require('../utils/joi-validators');
+const { joiName, joiEmail, joiPassword, joiId } = require('../utils/joi-validators');
 
 router.post(
   '/signin',
@@ -11,7 +11,7 @@ router.post(
       password: joiPassword(),
     }),
   }),
-  login,
+  login
 );
 
 router.post(
@@ -20,10 +20,10 @@ router.post(
     body: Joi.object().keys({
       email: joiEmail(),
       password: joiPassword(),
-      name: joiNameOrAbout(),
+      name: joiName(),
     }),
   }),
-  createUser,
+  createUser
 );
 
 router.post('/signout', celebrate({ body: Joi.object().keys({ _id: joiId() }) }), logout);

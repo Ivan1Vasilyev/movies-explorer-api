@@ -15,16 +15,25 @@ const getMovies = async (req, res, next) => {
   }
 };
 
-const createCard = async (req, res, next) => {
+const createMovie = async (req, res, next) => {
   try {
-    const { name, link } = req.body;
-    const newCard = await Movie.create({
+    const data = req.body;
+    const newMovie = await Movie.create({
       owner: req.user._id,
-      name: name ? escape(name) : name,
-      link,
+      country: escape(data.country),
+      director: escape(data.director),
+      duration: data.duration,
+      year: data.year,
+      description: escape(data.description),
+      image: data.image,
+      trailerLink: data.trailerLink,
+      thumbnail: data.thumbnail,
+      nameRU: escape(data.nameRU),
+      nameEN: escape(data.nameEN),
+      movieId: data.movieId,
     });
-    await newCard.populate('owner');
-    return res.status(CREATED_CODE).json(newCard);
+    await newMovie.populate('owner');
+    return res.status(CREATED_CODE).json(newMovie);
   } catch (e) {
     if (e.name === 'ValidationError') {
       return next(new NotValidError(getErrorMessages(e)));
@@ -33,23 +42,23 @@ const createCard = async (req, res, next) => {
   }
 };
 
-const deleteCard = async (req, res, next) => {
+const deleteMovie = async (req, res, next) => {
   try {
-    const deletingCard = await Movie.findById(req.params.cardId).populate(['owner', 'likes']);
-    if (!deletingCard) {
-      return next(new NotFoundError(`${NOT_EXISTS_MESSAGE}: Несуществующий id карточки`));
+    const deletingovie = await Movie.findById(req.params.movieId).populate('owner');
+    if (!deletingovie) {
+      return next(new NotFoundError(`${NOT_EXISTS_MESSAGE}: Несуществующий id фильма`));
     }
 
-    if (req.user._id !== String(deletingCard.owner._id)) {
-      return next(new NotAcceptedError('Вы не можете удалить чужую карточку'));
+    if (req.user._id !== String(deletingovie.owner._id)) {
+      return next(new NotAcceptedError('Вы не можете удалить чужой фильм'));
     }
 
-    await deletingCard.remove();
+    await deletingovie.remove();
 
-    return res.json(deletingCard);
+    return res.json(deletingovie);
   } catch (e) {
     if (e.name === 'CastError') {
-      return next(new NotValidError(`${NOT_CORRECT_MESSAGE}: Некорректный id карточки`));
+      return next(new NotValidError(`${NOT_CORRECT_MESSAGE}: Некорректный id фильма`));
     }
     return next(e);
   }
@@ -57,6 +66,6 @@ const deleteCard = async (req, res, next) => {
 
 module.exports = {
   getMovies,
-  deleteCard,
-  createCard,
+  deleteMovie,
+  createMovie,
 };

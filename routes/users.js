@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const { upDateUserData, getUserData } = require('../controllers/users');
+const { updateUser, getUserData } = require('../controllers/users');
 const { joiName, joiEmail } = require('../utils/joi-validators');
 
 router.get('/me', getUserData);
@@ -13,7 +13,7 @@ router.patch(
       email: joiEmail(true),
     }),
   }),
-  upDateUserData,
+  updateUser
 );
 
 module.exports = router;

@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
 const cors = require('cors');
 const router = require('./routes');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { NOT_EXISTS_MESSAGE } = require('./utils/constants');
 const NotFoundError = require('./errors/not-found');
 const centralizedErrorHandler = require('./errors/centralized-error-handler');
@@ -29,6 +30,7 @@ const corsOptions = {
   credentials: true,
 };
 
+app.use(requestLogger);
 app.use(limiter);
 app.use(cors(corsOptions));
 app.use(helmet());
@@ -38,12 +40,12 @@ app.use(router);
 app.use('*', (req, res, next) => {
   next(new NotFoundError(NOT_EXISTS_MESSAGE));
 });
-
+app.use(errorLogger);
 app.use(errors());
 
 app.use(centralizedErrorHandler);
 
-mongoose.connect(MONGO_PORT, { useNewUrlParser: true }, (err) => {
+mongoose.connect(MONGO_PORT, { useNewUrlParser: true }, err => {
   if (err) {
     console.log(`Can't connect to MongoDB. ${err}`);
     return;

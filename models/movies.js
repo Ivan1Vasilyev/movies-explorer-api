@@ -18,6 +18,10 @@ const cardSchema = new Schema(
     year: {
       type: String,
       required: true,
+      validate: {
+        validator: (v) => Number(v) > new Date().getFullYear(),
+        message: (props) => `${props.value} Год выпуска не может быть будущим`,
+      },
     },
     description: {
       type: String,
