@@ -89,14 +89,16 @@ const login = async (req, res, next) => {
       return next(new NotAuthorizedError('Неправильные почта или пароль'));
     }
 
-    const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key', {
-      expiresIn: '7d',
-    });
+    const token = jwt.sign(
+      { _id: user._id },
+      NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key',
+      { expiresIn: '7d' },
+    );
     return res
       .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-        sameSite: true,
+        sameSite: 'none',
         secure: true,
       })
       .json({ message: 'Вы авторизованы!' });
@@ -113,15 +115,17 @@ const logout = async (req, res, next) => {
       return next(new NotFoundError(`${NOT_EXISTS_MESSAGE}: Пользователь не найден.`));
     }
 
-    const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key', {
-      expiresIn: -1,
-    });
+    const token = jwt.sign(
+      { _id: user._id },
+      NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key',
+      { expiresIn: -1 },
+    );
 
     return res
       .cookie('jwt', token, {
         maxAge: 0,
         httpOnly: true,
-        sameSite: true,
+        sameSite: 'none',
         secure: true,
       })
       .json({ message: 'Выход из профиля' });

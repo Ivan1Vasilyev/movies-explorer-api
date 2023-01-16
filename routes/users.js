@@ -13,7 +13,7 @@ router.patch(
       email: joiEmail(true),
     }),
   }),
-  updateUser
+  updateUser,
 );
 
 module.exports = router;

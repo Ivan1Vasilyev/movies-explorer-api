@@ -45,7 +45,8 @@ app.use(errors());
 
 app.use(centralizedErrorHandler);
 
-mongoose.connect(MONGO_PORT, { useNewUrlParser: true }, err => {
+mongoose.set('strictQuery', false);
+mongoose.connect(MONGO_PORT, { useNewUrlParser: true }, (err) => {
   if (err) {
     console.log(`Can't connect to MongoDB. ${err}`);
     return;

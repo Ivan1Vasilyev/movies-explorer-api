@@ -11,7 +11,7 @@ router.post(
       password: joiPassword(),
     }),
   }),
-  login
+  login,
 );
 
 router.post(
@@ -23,7 +23,7 @@ router.post(
       name: joiName(),
     }),
   }),
-  createUser
+  createUser,
 );
 
 router.post('/signout', celebrate({ body: Joi.object().keys({ _id: joiId() }) }), logout);
