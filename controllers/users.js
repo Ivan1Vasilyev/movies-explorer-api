@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const escape = require('escape-html');
 const User = require('../models/users');
 const { NOT_CORRECT_MESSAGE, NOT_EXISTS_MESSAGE, CREATED_CODE } = require('../utils/constants');
+const { jwtPublicKey } = require('../utils/configs');
 const NotFoundError = require('../errors/not-found');
 const NotValidError = require('../errors/not-valid');
 const NotAuthorizedError = require('../errors/not-authorized');
@@ -91,14 +92,14 @@ const login = async (req, res, next) => {
 
     const token = jwt.sign(
       { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key',
+      NODE_ENV === 'production' ? JWT_SECRET : jwtPublicKey,
       { expiresIn: '7d' },
     );
     return res
       .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: true,
         secure: true,
       })
       .json({ message: 'Вы авторизованы!' });
@@ -117,7 +118,7 @@ const logout = async (req, res, next) => {
 
     const token = jwt.sign(
       { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'jwt-secret-key',
+      NODE_ENV === 'production' ? JWT_SECRET : jwtPublicKey,
       { expiresIn: -1 },
     );
 
@@ -125,7 +126,7 @@ const logout = async (req, res, next) => {
       .cookie('jwt', token, {
         maxAge: 0,
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: true,
         secure: true,
       })
       .json({ message: 'Выход из профиля' });

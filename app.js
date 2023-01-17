@@ -4,31 +4,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
 const cors = require('cors');
+const { limiter, corsOptions, mongoPortDev } = require('./utils/configs');
 const router = require('./routes');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { NOT_EXISTS_MESSAGE } = require('./utils/constants');
 const NotFoundError = require('./errors/not-found');
 const centralizedErrorHandler = require('./errors/centralized-error-handler');
 
-const { PORT = 3000, MONGO_PORT = 'mongodb://127.0.0.1:27017/bitfilmsdb' } = process.env;
+const { PORT = 3000, MONGO_PORT = mongoPortDev } = process.env;
 
 const app = express();
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 300,
-});
-
-const allowedCors = ['http://localhost:3000'];
-
-const corsOptions = {
-  origin: allowedCors,
-  optionsSuccessStatus: 200,
-  credentials: true,
-};
 
 app.use(requestLogger);
 app.use(limiter);
