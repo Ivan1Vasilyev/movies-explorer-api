@@ -13,7 +13,7 @@ const { NOT_EXISTS_MESSAGE } = require('./utils/constants');
 const NotFoundError = require('./errors/not-found');
 const centralizedErrorHandler = require('./errors/centralized-error-handler');
 
-const { PORT = 3001, MONGO_PORT = mongoPortDev } = process.env;
+const { PORT = 3000, MONGO_PORT = mongoPortDev } = process.env;
 
 const app = express();
 
