@@ -48,6 +48,9 @@ const updateUser = async (req, res, next) => {
     if (e.name === 'ValidationError') {
       return next(new NotValidError(getErrorMessages(e)));
     }
+    if (e.code === 11000) {
+      return next(new SameEmailError('Пользователь с таким email уже зарегистрирован'));
+    }
     return next(e);
   }
 };
