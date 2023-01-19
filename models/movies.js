@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 const isURL = require('validator/lib/isURL');
 
-const cardSchema = new Schema(
+const movieSchema = new Schema(
   {
     country: {
       type: String,
@@ -19,8 +19,8 @@ const cardSchema = new Schema(
       type: String,
       required: true,
       validate: {
-        validator: (v) => Number(v) > new Date().getFullYear(),
-        message: (props) => `${props.value} Год выпуска не может быть будущим`,
+        validator: (v) => Number(v) <= (new Date().getFullYear()),
+        message: (props) => `Год выпуска - ${props.value} - не может быть будущим`,
       },
     },
     description: {
@@ -72,4 +72,4 @@ const cardSchema = new Schema(
   { versionKey: false },
 );
 
-module.exports = model('movie', cardSchema);
+module.exports = model('movie', movieSchema);
