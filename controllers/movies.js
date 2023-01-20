@@ -1,15 +1,16 @@
 const escape = require('escape-html');
 const Movie = require('../models/movies');
 const {
-  NOT_CORRECT_MESSAGE,
-  NOT_EXISTS_MESSAGE,
+  NOT_CORRECT_ID_MESSAGE,
+  NOT_EXISTS_ID_MESSAGE,
+  NOT_OWNER_MESSAGE,
   CREATED_CODE,
-  BASE_URL,
 } = require('../utils/constants');
+const { baseUrl } = require('../utils/configs');
 const NotFoundError = require('../errors/not-found');
 const NotValidError = require('../errors/not-valid');
 const NotAcceptedError = require('../errors/not-accepted');
-const { getErrorMessages } = require('../utils/handle-errors');
+const { getErrorMessages } = require('../utils/helpers');
 
 const getMovies = async (req, res, next) => {
   try {
@@ -30,8 +31,8 @@ const createMovie = async (req, res, next) => {
       duration: data.duration,
       year: data.year,
       description: escape(data.description),
-      image: `${BASE_URL}${data.image.url}`,
-      thumbnail: `${BASE_URL}${data.image.formats.thumbnail.url}`,
+      image: `${baseUrl}${data.image.url}`,
+      thumbnail: `${baseUrl}${data.image.formats.thumbnail.url}`,
       trailerLink: data.trailerLink,
       nameRU: escape(data.nameRU),
       nameEN: escape(data.nameEN),
@@ -48,21 +49,21 @@ const createMovie = async (req, res, next) => {
 
 const deleteMovie = async (req, res, next) => {
   try {
-    const deletingovie = await Movie.findById(req.params.movieId);
-    if (!deletingovie) {
-      return next(new NotFoundError(`${NOT_EXISTS_MESSAGE}: Несуществующий id фильма`));
+    const deletingMovie = await Movie.findById(req.params.movieId);
+    if (!deletingMovie) {
+      return next(new NotFoundError(NOT_EXISTS_ID_MESSAGE));
     }
 
-    if (req.user._id !== String(deletingovie.owner)) {
-      return next(new NotAcceptedError('Вы не можете удалить чужой фильм'));
+    if (req.user._id !== String(deletingMovie.owner)) {
+      return next(new NotAcceptedError(NOT_OWNER_MESSAGE));
     }
 
-    await deletingovie.remove();
+    await deletingMovie.remove();
 
-    return res.json(deletingovie);
+    return res.json(deletingMovie);
   } catch (e) {
     if (e.name === 'CastError') {
-      return next(new NotValidError(`${NOT_CORRECT_MESSAGE}: Некорректный id фильма`));
+      return next(new NotValidError(NOT_CORRECT_ID_MESSAGE));
     }
     return next(e);
   }

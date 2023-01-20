@@ -5,8 +5,17 @@ const limiter = rateLimit({
   max: 300,
 });
 
-const mongoPortDev = 'mongodb://127.0.0.1:27017/bitfilmsdb';
+const baseUrl = 'https://api.nomoreparties.co/beatfilm-movies';
+
 const jwtPublicKey = 'b4a31f28503b509c62e2ec977b80250114100c6f3fd3ce7f2212132cd98b1dd0';
+const {
+  PORT = 3000,
+  MONGO_PORT = 'mongodb://127.0.0.1:27017/bitfilmsdb',
+  NODE_ENV,
+  JWT_SECRET,
+} = process.env;
+
+const tokenKey = NODE_ENV === 'production' ? JWT_SECRET : jwtPublicKey;
 
 const allowedCors = ['http://localhost:3001'];
 
@@ -16,4 +25,11 @@ const corsOptions = {
   credentials: true,
 };
 
-module.exports = { limiter, corsOptions, mongoPortDev, jwtPublicKey };
+module.exports = {
+  limiter,
+  corsOptions,
+  PORT,
+  MONGO_PORT,
+  baseUrl,
+  tokenKey,
+};
