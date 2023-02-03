@@ -66,11 +66,17 @@ const createUser = async (req, res, next) => {
       email,
       password: hash,
     });
-    return res.status(CREATED_CODE).json({
-      name: newUser.name,
-      email: newUser.email,
-      _id: newUser._id,
-    });
+
+    const token = jwtSign(newUser, '7d');
+
+    return res
+      .status(CREATED_CODE)
+      .cookie('jwt', token, setCookies(3600000 * 24 * 7))
+      .json({
+        name: newUser.name,
+        email: newUser.email,
+        _id: newUser._id,
+      });
   } catch (e) {
     if (e.name === 'ValidationError') {
       return next(new NotValidError(getErrorMessages(e)));
@@ -93,10 +99,9 @@ const login = async (req, res, next) => {
     if (!isLogged) return next(new NotAuthorizedError(LOGIN_ERROR_MESSAGE));
 
     const token = jwtSign(user, '7d');
+    const { name, _id } = user;
 
-    return res
-      .cookie('jwt', token, setCookies(3600000 * 24 * 7))
-      .json({ message: 'Вы авторизованы!' });
+    return res.cookie('jwt', token, setCookies(3600000 * 24 * 7)).json({ name, email, _id });
   } catch (e) {
     return next(e);
   }
