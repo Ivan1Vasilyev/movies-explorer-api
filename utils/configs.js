@@ -17,7 +17,7 @@ const {
 
 const tokenKey = NODE_ENV === 'production' ? JWT_SECRET : jwtPublicKey;
 
-const allowedCors = ['http://localhost:3001'];
+const allowedCors = ['http://localhost:3000'];
 
 const corsOptions = {
   origin: allowedCors,
