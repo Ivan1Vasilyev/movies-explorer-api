@@ -6,9 +6,8 @@ const jwtSign = (user, expiresIn) => jwt.sign({ _id: user._id }, tokenKey, { exp
 const setCookies = (maxAge) => ({
   maxAge,
   httpOnly: true,
-  sameSite: 'lax',
-  path: '/',
-  // secure: true,
+  sameSite: 'none',
+  secure: false,
 });
 
 const getErrorMessages = (e) => Object.values(e.errors)
