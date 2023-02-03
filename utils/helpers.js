@@ -7,7 +7,7 @@ const setCookies = (maxAge) => ({
   maxAge,
   httpOnly: true,
   sameSite: 'none',
-  secure: false,
+  secure: true,
 });
 
 const getErrorMessages = (e) => Object.values(e.errors)
