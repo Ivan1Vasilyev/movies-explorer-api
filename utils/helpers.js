@@ -7,6 +7,7 @@ const setCookies = (maxAge) => ({
   maxAge,
   httpOnly: true,
   sameSite: 'lax',
+  path: '/',
   // secure: true,
 });
 
