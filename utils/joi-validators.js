@@ -9,8 +9,9 @@ const joiYear = () => Joi.string().required().pattern(REGEXP_YEAR);
 const joiUrl = () => Joi.string().required().pattern(REGEXP_URL);
 const joiEmail = () => Joi.string().required().email({ minDomainSegments: 2 });
 const joiPassword = () => Joi.string().required().min(4);
-const joiId = (source, id) => celebrate(
-  { [source]: Joi.object().keys({ [id]: Joi.string().hex().required().length(24) }) },
+const joiId = () => Joi.string().hex().required().length(24);
+const joiCustomId = (source, id) => celebrate(
+  { [source]: Joi.object().keys({ [id]: joiId() }) },
 );
 
 const joivalidateRegister = () => celebrate({
@@ -35,9 +36,9 @@ const joiValidateUserData = () => celebrate({
   }),
 });
 
-const joiValidateUserId = () => joiId('body', '_id');
+const joiValidateUserId = () => joiCustomId('body', '_id');
 
-const joiValidateMovieId = () => joiId('params', 'movieId');
+const joiValidateMovieId = () => joiCustomId('params', 'movieId');
 
 const joiValidateMovie = () => celebrate({
   body: Joi.object().keys({
@@ -49,7 +50,10 @@ const joiValidateMovie = () => celebrate({
     duration: joiRequiredNumber(),
     description: joiRequiredString(),
     trailerLink: joiUrl(),
+    thumbnail: joiUrl(),
     image: joiUrl(),
+    movieId: joiRequiredNumber(),
+    owner: joiId(),
   }),
 });
 
