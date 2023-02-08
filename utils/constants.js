@@ -12,7 +12,7 @@ const AUTH_ERROR_MESSAGE = 'Необходима авторизация';
 
 const REGEXP_URL = /^https?:\/\/(www.)?[-.:/?#@!$&%'()_+~,;=a-zA-Z0-9]+$/;
 const REGEXP_YEAR = /^(1|2)(0|9|8)\d{2,2}$/;
-const REGEXP_NAME = /^[-_\sa-zа-я]+$/i;
+const REGEXP_NAME = /^[-_\sa-zа-яё]+$/i;
 
 module.exports = {
   CREATED_CODE,
