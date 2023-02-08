@@ -6,7 +6,6 @@ const {
   NOT_OWNER_MESSAGE,
   CREATED_CODE,
 } = require('../utils/constants');
-const { baseUrl } = require('../utils/configs');
 const NotFoundError = require('../errors/not-found');
 const NotValidError = require('../errors/not-valid');
 const NotAcceptedError = require('../errors/not-accepted');
@@ -31,12 +30,12 @@ const createMovie = async (req, res, next) => {
       duration: data.duration,
       year: data.year,
       description: escape(data.description),
-      image: `${baseUrl}${data.image.url}`,
-      thumbnail: `${baseUrl}${data.image.formats.thumbnail.url}`,
+      image: data.image,
+      thumbnail: data.thumbnail,
       trailerLink: data.trailerLink,
       nameRU: escape(data.nameRU),
       nameEN: escape(data.nameEN),
-      movieId: data.id,
+      movieId: data.movieId,
     });
     return res.status(CREATED_CODE).json(newMovie);
   } catch (e) {

@@ -19,7 +19,7 @@ const movieSchema = new Schema(
       type: String,
       required: true,
       validate: {
-        validator: (v) => Number(v) <= (new Date().getFullYear()),
+        validator: (v) => Number(v) <= new Date().getFullYear(),
         message: (props) => `Год выпуска - ${props.value} - не может быть будущим`,
       },
     },
