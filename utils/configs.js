@@ -17,7 +17,7 @@ const tokenKey = NODE_ENV === 'production' ? JWT_SECRET : jwtPublicKey;
 
 const allowedCors = [
   'https://shaloban.students.nomoredomains.club',
-  // 'http://localhost:3000',
+  'http://localhost:3000',
   // 'https://api.moovies.nomoredomains.rocks',
   // 'http://api.moovies.nomoredomains.rocks',
   // 'https://moovies.nomoredomains.work',
