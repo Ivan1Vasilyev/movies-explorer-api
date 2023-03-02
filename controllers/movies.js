@@ -33,8 +33,8 @@ const createMovie = async (req, res, next) => {
       image: data.image,
       thumbnail: data.thumbnail,
       trailerLink: data.trailerLink,
-      nameRU: escape(data.nameRU),
-      nameEN: escape(data.nameEN),
+      nameRU: data.nameRU,
+      nameEN: data.nameEN,
       movieId: data.movieId,
     });
     return res.status(CREATED_CODE).json(newMovie);
