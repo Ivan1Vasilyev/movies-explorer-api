@@ -15,7 +15,7 @@ const {
 
 const tokenKey = NODE_ENV === 'production' ? JWT_SECRET : jwtPublicKey;
 
-const allowedCors = ['https://shaloban.students.nomoredomains.club'];
+const allowedCors = ['https://shaloban.students.nomoredomains.club', 'http://localhost:3000'];
 
 const corsOptions = {
   origin: allowedCors,

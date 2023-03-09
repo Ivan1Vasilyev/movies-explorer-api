@@ -6,7 +6,7 @@ const jwtSign = (user, expiresIn) => jwt.sign({ _id: user._id }, tokenKey, { exp
 const setCookies = (maxAge) => ({
   maxAge,
   httpOnly: true,
-  sameSite: true,
+  sameSite: 'none',
   secure: true,
 });
 
